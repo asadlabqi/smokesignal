@@ -7,6 +7,31 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    private byte[] encrypt(byte[] keyStream, byte[] plaintext) {
+        int i;
+        int mLength = plaintext.length;
+        byte[] ciphertext = new byte[mLength];
+
+        for (i = 0; i < mLength ; i++) {
+            ciphertext[i] = (byte) (plaintext[i]^keyStream[i]);
+        }
+
+        return ciphertext;
+    }
+
+    private byte[] decrypt(byte[] keyStream, byte[] ciphertext) {
+        int i;
+        int cLength = ciphertext.length;
+        byte[] plaintext = new byte[cLength];
+
+        for (i = 0; i < cLength ; i++) {
+            plaintext[i] = (byte) (ciphertext[i]^keyStream[i]);
+        }
+
+        return plaintext;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
