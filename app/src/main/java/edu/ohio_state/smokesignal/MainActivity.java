@@ -36,34 +36,7 @@ public class MainActivity extends AppCompatActivity
      private CharSequence mTitle;
      private String payload;
 
-     //Array for converting byte array to printable format
-    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-    SecureRandom mSecureRandom;
     TextView mTextView;
-
-    private byte[] encrypt(byte[] keyStream, byte[] plaintext) {
-        int i;
-        int mLength = plaintext.length;
-        byte[] ciphertext = new byte[mLength];
-
-        for (i = 0; i < mLength ; i++) {
-            ciphertext[i] = (byte) (plaintext[i]^keyStream[i]);
-        }
-
-        return ciphertext;
-    }
-
-    private byte[] decrypt(byte[] keyStream, byte[] ciphertext) {
-        int i;
-        int cLength = ciphertext.length;
-        byte[] plaintext = new byte[cLength];
-
-        for (i = 0; i < cLength ; i++) {
-            plaintext[i] = (byte) (ciphertext[i]^keyStream[i]);
-        }
-
-        return plaintext;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +52,6 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        mSecureRandom = new SecureRandom();
-        byte[] output = new byte[16];
-        mSecureRandom.nextBytes(output);
-
         // Check for available NFC Adapter
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
@@ -92,12 +61,7 @@ public class MainActivity extends AppCompatActivity
         // Register callback
         mNfcAdapter.setNdefPushMessageCallback(this, this);
 
-        Log.d("MainActivity","nfc adapter success!!");
-        /*
-        mTextView = (TextView) findViewById(R.id.prng);
-        String prng = bytesToHex(output);
-        mTextView.setText(prng);
-        */
+        Log.d("MainActivity", "nfc adapter success!!");
 
     }
 
@@ -111,11 +75,14 @@ public class MainActivity extends AppCompatActivity
 
          Fragment fragment = PlaceholderFragment.newInstance(position + 1);
          if (position == 0) {
-             fragment = KeyExchangeFragment.newInstance();
+             fragment = EncryptionFragment.newInstance();
          }else if(position == 1){
-             //fragment = RecentSearchFragment.newInstance();
+             fragment = KeyExchangeFragment.newInstance();
          }else if(position == 2){
-             //fragment = SettingsFragment.newInstance();
+             // Messages Fragment
+         }
+         else {
+             // Settings Fragment
          }
 
          fragmentManager.beginTransaction()
@@ -126,12 +93,15 @@ public class MainActivity extends AppCompatActivity
      public void onSectionAttached(int number) {
          switch (number) {
              case 1:
-                 mTitle = getString(R.string.share_key);
+                 mTitle = getString(R.string.encryption);
                  break;
              case 2:
-                 mTitle = getString(R.string.messages);
+                 mTitle = getString(R.string.share_key);
                  break;
              case 3:
+                 mTitle = getString(R.string.messages);
+                 break;
+             case 4:
                  mTitle = getString(R.string.settings);
                  break;
          }
@@ -171,18 +141,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    //Converts byte array to a string of hex digits while keeping leading zeroes
-    //Source: http://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java
-    public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
     }
 
      @Override
