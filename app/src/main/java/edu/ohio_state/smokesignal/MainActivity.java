@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity
          }else if(position == 2){
              // Messages Fragment
          }
+         else if(position == 3){
+             fragment = KeyBankFragment.newInstance();
+         }
          else {
              // Settings Fragment
          }

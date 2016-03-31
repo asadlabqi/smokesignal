@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.FileOutputStream;
 import java.security.SecureRandom;
+import java.util.Calendar;
 
 
 /**
@@ -94,6 +96,18 @@ public class EncryptionFragment extends Fragment {
 
                 String prng = bytesToHex(keyStream);
                 PRNGView.setText(prng);
+
+                String filename = "KEY-" + Calendar.getInstance().get(Calendar.SECOND);
+                FileOutputStream outputStream;
+                Context cxt = getContext();
+
+                try {
+                    outputStream = cxt.openFileOutput(filename, Context.MODE_PRIVATE);
+                    outputStream.write(keyStream);
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
