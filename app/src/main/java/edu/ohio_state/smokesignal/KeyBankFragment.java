@@ -4,10 +4,22 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -23,6 +35,9 @@ public class KeyBankFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    List<String> fileList = new ArrayList<>();
+    ArrayAdapter<String> arrayAdapter;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -67,8 +82,21 @@ public class KeyBankFragment extends Fragment {
 
     @Override
     public void onViewCreated(View v, Bundle savedInstanceState) {
-       
+        ListView keyBank = (ListView) v.findViewById(R.id.key_bank_list);
 
+        String path = getActivity().getFilesDir().getPath();
+        File f = new File(path);
+        File file[] = f.listFiles();
+        for (int i=0; i < file.length; i++)
+        {
+            fileList.add(i, file[i].getName());
+        }
+
+        // Create the ArrayAdapter to work with the ListView.
+        arrayAdapter = new ArrayAdapter<String>(
+                getActivity().getApplicationContext(), R.layout.blacktestlist, fileList);
+        keyBank.setAdapter(arrayAdapter);
+        registerForContextMenu(keyBank);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -76,6 +104,42 @@ public class KeyBankFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.key_bank_list) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            menu.setHeaderTitle(fileList.get(info.position));
+            String[] menuItems = getResources().getStringArray(R.array.menu);
+            for (int i = 0; i<menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
+            }
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int selected = item.getItemId();
+        String[] menuList = getResources().getStringArray(R.array.menu);
+        String listItemName = fileList.get(info.position);
+
+        if (selected == 0) {
+            // The user selected Rename.
+            String newName = "Test";
+            rename(listItemName, newName);
+        } else if (selected == 1) {
+            // The user selected Send.
+
+        } else {
+            // The user selected Delete.
+            delete(listItemName);
+        }
+
+        arrayAdapter.notifyDataSetChanged();
+
+        return true;
     }
 
     @Override
@@ -102,6 +166,21 @@ public class KeyBankFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    private boolean delete(String itemName) {
+        File dir = getActivity().getFilesDir();
+        File file = new File(dir, itemName);
+        boolean deleted = file.delete();
+
+        return deleted;
+    }
+
+    private void rename(String itemName, String newName) {
+        File dir = getActivity().getFilesDir();
+        File file = new File(dir, itemName);
+        File newfile = new File(dir, newName);
+        file.renameTo(newfile);
     }
 
 }

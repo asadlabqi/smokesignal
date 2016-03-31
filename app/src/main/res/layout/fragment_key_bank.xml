@@ -4,10 +4,10 @@
              android:layout_height="match_parent"
              tools:context="edu.ohio_state.smokesignal.KeyBankFragment">
 
-    <TextView
-        android:id="@+id/key_exchange_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Key Bank"/>
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/key_bank_list"
+        android:choiceMode="singleChoice"/>
 
 </FrameLayout>

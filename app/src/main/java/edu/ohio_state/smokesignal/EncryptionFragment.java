@@ -97,7 +97,8 @@ public class EncryptionFragment extends Fragment {
                 String prng = bytesToHex(keyStream);
                 PRNGView.setText(prng);
 
-                String filename = "KEY-" + Calendar.getInstance().get(Calendar.SECOND);
+                Calendar c = Calendar.getInstance();
+                String filename = "KEY-"+c.get(Calendar.DATE)+"-"+c.get(Calendar.HOUR)+"-"+c.get(Calendar.MINUTE)+"-"+c.get(Calendar.SECOND);
                 FileOutputStream outputStream;
                 Context cxt = getContext();
 
