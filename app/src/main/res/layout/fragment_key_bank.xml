@@ -10,4 +10,10 @@
         android:id="@+id/key_bank_list"
         android:choiceMode="singleChoice"/>
 
+    <FrameLayout android:name="fragments.KeyBankFragment"
+        android:id="@+id/fragment_container"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dip" />
+
 </FrameLayout>

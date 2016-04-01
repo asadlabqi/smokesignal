@@ -2,17 +2,21 @@
     <string name="app_name">SmokeSignal</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- Strings for the navigation bar. -->
     <string name="share_key">Share Key</string>
     <string name="encryption">Encryption</string>
     <string name="key_bank">Key Bank</string>
     <string name="messages">Messages</string>
     <string name="settings">Settings</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="about_us">About Us</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <string name="rename">Please enter a new name.</string>
+    <string name="submitrename">Submit</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ public class KeyExchangeFragment extends Fragment {
     private String mParam2;
     private TextView mTextView;
 
+    private static String LOGTAG = "KeyExchangeFragment";
+
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -37,10 +40,13 @@ public class KeyExchangeFragment extends Fragment {
      *
      * @return A new instance of fragment KeyExchangeFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static KeyExchangeFragment newInstance() {
+    public static KeyExchangeFragment newInstance(Uri keyUri) {
         KeyExchangeFragment fragment = new KeyExchangeFragment();
         Bundle args = new Bundle();
+        if(keyUri != null) {
+            args.putString("uri", keyUri.getPath());
+            Log.d(LOGTAG, "A key was shared at:" + args.getString("uri"));
+        }
         fragment.setArguments(args);
         return fragment;
     }

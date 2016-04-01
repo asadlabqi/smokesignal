@@ -1,13 +1,13 @@
 package edu.ohio_state.smokesignal;
 
-import android.app.AlertDialog;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -15,12 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,25 +28,28 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link KeyBankFragment.OnFragmentInteractionListener} interface
+ * {@link KeyBankFragment.OnKeySharedListener} interface
  * to handle interaction events.
  * Use the {@link KeyBankFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class KeyBankFragment extends Fragment {
 
-    ListView keyBank;
-    List<String> fileList = new ArrayList<>();
-    ArrayAdapter<String> arrayAdapter;
-    Runnable update;
+    final String LOGTAG = "KeyBankFragment";
 
-    private OnFragmentInteractionListener mListener;
+    private List<String> fileList = new ArrayList<>();
+    private ArrayAdapter<String> arrayAdapter;
+    private Runnable update;
+    private AlertDialog dialog;
+    private String listItemName;
+
+    private OnKeySharedListener mListener;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment KeyExchangeFragment.
+     * @return A new instance of fragment KeyBankFragment.
      */
     public static KeyBankFragment newInstance() {
         KeyBankFragment fragment = new KeyBankFragment();
@@ -64,10 +65,6 @@ public class KeyBankFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -79,8 +76,27 @@ public class KeyBankFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View v, Bundle savedInstanceState) {
-        keyBank = (ListView) v.findViewById(R.id.key_bank_list);
+    public void onViewCreated(final View v, Bundle savedInstanceState) {
+        ListView keyBank = (ListView) v.findViewById(R.id.key_bank_list);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(R.layout.fragment_rename_dialog);
+        builder.setMessage(R.string.rename)
+                .setPositiveButton(R.string.submitrename, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        EditText uInput = (EditText)  ((AlertDialog) dialog).findViewById(R.id.newname);
+                        String newName = uInput.getText().toString();
+                        rename(listItemName, newName);
+                        uInput.setText("");
+                        getActivity().runOnUiThread(update);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+        dialog = builder.create();
 
         update = new Runnable() {
             @Override
@@ -98,16 +114,10 @@ public class KeyBankFragment extends Fragment {
         }
 
         // Create the ArrayAdapter to work with the ListView.
-        arrayAdapter = new ArrayAdapter<String>(
+        arrayAdapter = new ArrayAdapter<>(
                 getActivity().getApplicationContext(), R.layout.blacktestlist, fileList);
         keyBank.setAdapter(arrayAdapter);
         registerForContextMenu(keyBank);
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -126,17 +136,18 @@ public class KeyBankFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int selected = item.getItemId();
-        String[] menuList = getResources().getStringArray(R.array.menu);
-        String listItemName = fileList.get(info.position);
+        listItemName = fileList.get(info.position);
 
         if (selected == 0) {
             // The user selected Rename.
-            // TODO: Get actual string from the user.
-            String newName = "Test";
-            rename(listItemName, newName);
+            dialog.show();
         } else if (selected == 1) {
             // The user selected Share.
             // TODO: Navigate to the KeyExchangeFragment.
+            File dir = getActivity().getFilesDir();
+            File file = new File(dir, listItemName);
+            Uri keyUri = Uri.fromFile(file);
+            mListener.OnKeyShared(keyUri);
         } else {
             // The user selected Delete.
             delete(listItemName);
@@ -150,6 +161,11 @@ public class KeyBankFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        try {
+            mListener = (OnKeySharedListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString() + " must implement OnKeySharedListener");
+        }
     }
 
     @Override
@@ -158,19 +174,12 @@ public class KeyBankFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+    /*
+        The user has decided to share a specific key in the NFC view. Send this key back to the
+        activity and pass it on to Key Exchange.
+    */
+    public interface OnKeySharedListener {
+        public void OnKeyShared(Uri uri);
     }
 
     private boolean delete(String itemName) {
@@ -180,6 +189,8 @@ public class KeyBankFragment extends Fragment {
         fileList.remove(itemName);
         boolean deleted = file.delete();
 
+        Log.d(LOGTAG, "Delete Result - " + deleted);
+
         return deleted;
     }
 
@@ -187,7 +198,8 @@ public class KeyBankFragment extends Fragment {
         File dir = getActivity().getFilesDir();
         File file = new File(dir, itemName);
         File newfile = new File(dir, newName);
-        file.renameTo(newfile);
+        boolean result = file.renameTo(newfile);
+        Log.d(LOGTAG, "Rename Result - " + result);
 
         fileList.remove(itemName);
         fileList.add(fileList.size() - 1, newName);

@@ -27,7 +27,8 @@ import java.security.SecureRandom;
 import static android.nfc.NdefRecord.createMime;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, NfcAdapter.CreateNdefMessageCallback
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, NfcAdapter.CreateNdefMessageCallback,
+                    KeyBankFragment.OnKeySharedListener
  {
 
      NfcAdapter mNfcAdapter;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity
          if (position == 0) {
              fragment = EncryptionFragment.newInstance();
          }else if(position == 1){
-             fragment = KeyExchangeFragment.newInstance();
+             fragment = KeyExchangeFragment.newInstance(null);
          }else if(position == 2){
              // Messages Fragment
          }
@@ -192,6 +193,15 @@ public class MainActivity extends AppCompatActivity
          if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
              processIntent(getIntent());
          }
+     }
+
+     // Called when the user selects a key to be shared in the Key Bank Fragment.
+     @Override
+     public void OnKeyShared(Uri uri) {
+         FragmentManager fragmentManager = getSupportFragmentManager();
+         Fragment fragment = KeyExchangeFragment.newInstance(uri);
+         fragmentManager.beginTransaction()
+                 .replace(R.id.container, fragment).commit();
      }
 
      /**
