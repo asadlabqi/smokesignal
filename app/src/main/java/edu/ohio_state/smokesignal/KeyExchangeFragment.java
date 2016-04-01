@@ -107,22 +107,11 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     //NFC METHODS
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        // TODO: Change text to the file contents of the URI in args.
-        String text = "This should be a key!";
+        SecureRandom sr = new SecureRandom();
+        byte[] key = new byte[256];
 
         NdefMessage msg = new NdefMessage(
-                new NdefRecord[] { createMime(
-                        "application/edu.ohio_state.smokesignal", text.getBytes())
-                        /**
-                         * The Android Application Record (AAR) is commented out. When a device
-                         * receives a push with an AAR in it, the application specified in the AAR
-                         * is guaranteed to run. The AAR overrides the tag dispatch system.
-                         * You can add it back in to guarantee that this
-                         * activity starts when receiving a beamed message. For now, this code
-                         * uses the tag dispatch system.
-                         */
-                        //,NdefRecord.createApplicationRecord("com.example.android.beam")
-                });
+                new NdefRecord[] { createMime("application/edu.ohio_state.smokesignal", key)});
         return msg;
     }
 
