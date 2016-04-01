@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
          }else if(position == 1){
              fragment = KeyExchangeFragment.newInstance(null);
          }else if(position == 2){
-             // TODO: Create a Messages Fragment.
+             fragment = MessagesFragment.newInstance();
          }
          else if(position == 3){
              fragment = KeyBankFragment.newInstance(null);
