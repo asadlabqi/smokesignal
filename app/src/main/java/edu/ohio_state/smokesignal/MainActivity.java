@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
-import android.nfc.NfcEvent;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,20 +21,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.security.SecureRandom;
-
-import static android.nfc.NdefRecord.createMime;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
                     KeyBankFragment.OnKeySharedListener
  {
 
-     NfcAdapter mNfcAdapter;
      private String TAG = "Main Activity";
      private NavigationDrawerFragment mNavigationDrawerFragment;
      private CharSequence mTitle;
-     private String payload;
 
     TextView mTextView;
 
@@ -75,7 +67,7 @@ public class MainActivity extends AppCompatActivity
          // update the main content by replacing fragments
          FragmentManager fragmentManager = getSupportFragmentManager();
 
-         Log.d("MA", "Position: " + position);
+         Log.d(TAG, "Position: " + position);
 
          Fragment fragment = PlaceholderFragment.newInstance(position + 1);
          if (position == 0) {
@@ -83,13 +75,13 @@ public class MainActivity extends AppCompatActivity
          }else if(position == 1){
              fragment = KeyExchangeFragment.newInstance(null);
          }else if(position == 2){
-             // Messages Fragment
+             // TODO: Create a Messages Fragment.
          }
          else if(position == 3){
              fragment = KeyBankFragment.newInstance();
          }
          else {
-             // Settings Fragment
+             // TODO: Create a Settings Fragment.
          }
 
          fragmentManager.beginTransaction()
@@ -150,6 +142,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+     // TODO: Determine if we still need this code. Otherwise delete.
      /*
      @Override
      public NdefMessage createNdefMessage(NfcEvent event) {
@@ -170,9 +163,11 @@ public class MainActivity extends AppCompatActivity
      }
 
      /**
-      * Parses the NDEF Message from the intent and prints to the TextView
+      * Parses the NDEF Message from the intent and shows it on a Toast. The Activity then reloads
+      * the KeyBank so that the user can see their new key.
       */
      void processIntent(Intent intent) {
+         Log.d(TAG, "NDEF Intent is being processed.");
          mTextView = (TextView) findViewById(R.id.key_exchange_text);
          Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
                  NfcAdapter.EXTRA_NDEF_MESSAGES);
@@ -180,6 +175,11 @@ public class MainActivity extends AppCompatActivity
          NdefMessage msg = (NdefMessage) rawMsgs[0];
          // record 0 contains the MIME type, record 1 is the AAR, if present
          Toast.makeText(MainActivity.this, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_SHORT).show();
+
+         FragmentManager fragmentManager = getSupportFragmentManager();
+         Fragment fragment = KeyBankFragment.newInstance();
+         fragmentManager.beginTransaction()
+                 .replace(R.id.container, fragment).commit();
      }
 
      @Override
@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity
      // Called when the user selects a key to be shared in the Key Bank Fragment.
      @Override
      public void OnKeyShared(Uri uri) {
+         Log.d(TAG, "Key received from Key Bank. URI = " + uri.toString());
          FragmentManager fragmentManager = getSupportFragmentManager();
          Fragment fragment = KeyExchangeFragment.newInstance(uri);
          fragmentManager.beginTransaction()
@@ -228,8 +229,7 @@ public class MainActivity extends AppCompatActivity
          @Override
          public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                   Bundle savedInstanceState) {
-             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-             return rootView;
+             return inflater.inflate(R.layout.fragment_main, container, false);
          }
 
          @Override
