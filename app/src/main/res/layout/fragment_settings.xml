@@ -19,7 +19,6 @@
     <TextView
         android:id="@+id/AboutSS"
         android:text="@string/aboutsmokesignal"
-        android:textAlignment=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/AboutUsTitle"
@@ -41,7 +40,6 @@
     <TextView
         android:id="@+id/AboutUs"
         android:text="@string/aboutus"
-        android:textAlignment=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/AboutUsTitle"

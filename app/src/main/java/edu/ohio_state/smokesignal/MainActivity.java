@@ -1,6 +1,5 @@
 package edu.ohio_state.smokesignal;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NdefMessage;
@@ -13,13 +12,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity
 
          Log.d(TAG, "Position: " + position);
 
-         Fragment fragment = PlaceholderFragment.newInstance(position + 1);
+         Fragment fragment;
          if (position == 0) {
              fragment = EncryptionFragment.newInstance();
          }else if(position == 1){
@@ -89,6 +87,7 @@ public class MainActivity extends AppCompatActivity
 
      }
 
+     // TODO: Determine if this is still needed now that PlaceHolder Fragment is gone.
      public void onSectionAttached(int number) {
          switch (number) {
              case 1:
@@ -111,7 +110,6 @@ public class MainActivity extends AppCompatActivity
 
      public void restoreActionBar() {
          ActionBar actionBar = getSupportActionBar();
-         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
          actionBar.setDisplayShowTitleEnabled(true);
          actionBar.setTitle(mTitle);
      }
@@ -164,7 +162,7 @@ public class MainActivity extends AppCompatActivity
          NdefMessage msg = (NdefMessage) rawMsgs[0];
          // record 0 contains the MIME type, record 1 is the AAR, if present
          byte[] messageText = msg.getRecords()[0].getPayload();
-         Toast.makeText(MainActivity.this, messageText.toString(), Toast.LENGTH_SHORT).show();
+         Toast.makeText(MainActivity.this, Arrays.toString(messageText), Toast.LENGTH_SHORT).show();
 
          FragmentManager fragmentManager = getSupportFragmentManager();
          Fragment fragment = KeyBankFragment.newInstance(messageText);
@@ -190,45 +188,5 @@ public class MainActivity extends AppCompatActivity
          fragmentManager.beginTransaction()
                  .replace(R.id.container, fragment).commit();
      }
-
-     /**
-      * A placeholder fragment containing a simple view.
-      */
-     public static class PlaceholderFragment extends Fragment {
-         /**
-          * The fragment argument representing the section number for this
-          * fragment.
-          */
-         private static final String ARG_SECTION_NUMBER = "section_number";
-
-         /**
-          * Returns a new instance of this fragment for the given section
-          * number.
-          */
-         public static PlaceholderFragment newInstance(int sectionNumber) {
-             PlaceholderFragment fragment = new PlaceholderFragment();
-             Bundle args = new Bundle();
-             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-             fragment.setArguments(args);
-             return fragment;
-         }
-
-         public PlaceholderFragment() {
-         }
-
-         @Override
-         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                  Bundle savedInstanceState) {
-             return inflater.inflate(R.layout.fragment_main, container, false);
-         }
-
-         @Override
-         public void onAttach(Activity activity) {
-             super.onAttach(activity);
-             ((MainActivity) activity).onSectionAttached(
-                     getArguments().getInt(ARG_SECTION_NUMBER));
-         }
-     }
-
 }
 
