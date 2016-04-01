@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
              fragment = KeyBankFragment.newInstance(null);
          }
          else {
-             // TODO: Create a Settings Fragment.
+             fragment = SettingsFragment.newInstance();
          }
 
          fragmentManager.beginTransaction()
@@ -101,6 +101,9 @@ public class MainActivity extends AppCompatActivity
                  mTitle = getString(R.string.messages);
                  break;
              case 4:
+                 mTitle = getString(R.string.key_bank);
+                 break;
+             case 5:
                  mTitle = getString(R.string.settings);
                  break;
          }
@@ -141,20 +144,6 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-     // TODO: Determine if we still need this code. Otherwise delete.
-     /*
-     @Override
-     public NdefMessage createNdefMessage(NfcEvent event) {
-         String text = ("Beam me up, Android!\n\n" +
-                 "Beam Time: " + System.currentTimeMillis());
-         NdefMessage msg = new NdefMessage(
-                 new NdefRecord[] { createMime(
-                         "application/edu.ohio_state.smokesignal", text.getBytes())
-                 });
-         return msg;
-     }
-     */
 
      @Override
      public void onNewIntent(Intent intent) {
