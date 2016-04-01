@@ -12,9 +12,13 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="about_us">About Us</string>
+    <string name="about_smoke_signal">About SmokeSignal</string>
 
     <string name="rename">Please enter a new name.</string>
     <string name="submitrename">Submit</string>
     <string name="cancel">Cancel</string>
+
+    <string name="aboutsmokesignal">SmokeSignal is an encrypted messaging application that utilizes NFC to securely share keys between two users. These same users can then use their shared key to communicate over SMS using One Time Pad and their shared key.</string>
+    <string name="aboutus">SmokeSignal was developed by Austin Gilliam, Asad Iqbal, and Parker Kurtz in the Spring Semester of 2016 at The Ohio State University.</string>
 
 </resources>
