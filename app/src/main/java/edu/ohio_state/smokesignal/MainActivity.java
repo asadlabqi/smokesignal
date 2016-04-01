@@ -168,7 +168,6 @@ public class MainActivity extends AppCompatActivity
       */
      void processIntent(Intent intent) {
          Log.d(TAG, "NDEF Intent is being processed.");
-         mTextView = (TextView) findViewById(R.id.key_exchange_text);
          Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
                  NfcAdapter.EXTRA_NDEF_MESSAGES);
          // only one message sent during the beam

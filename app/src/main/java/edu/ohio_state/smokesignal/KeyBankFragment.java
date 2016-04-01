@@ -167,6 +167,7 @@ public class KeyBankFragment extends Fragment {
             dialog.show();
         } else if (selected == 1) {
             // The user selected Share.
+            //TODO Check if the user has shared this key before
             File dir = getActivity().getFilesDir();
             File file = new File(dir, listItemName);
             Uri keyUri = Uri.fromFile(file);
@@ -244,7 +245,11 @@ public class KeyBankFragment extends Fragment {
         }
 
         // Add the file to the fileList.
-        fileList.add(fileList.size() - 1, filename);
+        if(fileList.size() > 0){
+            fileList.add(fileList.size() - 1, filename);
+        }else{
+            fileList.add(0, filename);
+        }
         getActivity().runOnUiThread(update);
     }
 

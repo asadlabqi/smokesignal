@@ -15,7 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.SecureRandom;
 
 import static android.nfc.NdefRecord.createMime;
@@ -32,6 +36,8 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     private Context mContext;
     private TextView mTextView;
     public boolean mSharing;
+    private static File mFile;
+    private byte[] keyStream;
 
     private static String LOGTAG = "KeyExchangeFragment";
 
@@ -47,6 +53,8 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
         if(keyUri != null) {
             args.putString("uri", keyUri.getPath());
             Log.d(LOGTAG, "A key was shared at:" + args.getString("uri"));
+            mFile = new File(keyUri.getPath());
+            Log.d(LOGTAG, mFile.toString());
         }
         fragment.setArguments(args);
         return fragment;
@@ -72,18 +80,26 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     public void onViewCreated(View v, Bundle savedInstanceState) {
         mTextView = (TextView) v.findViewById(R.id.key_exchange_text);
 
+        String line = "";
+
         try {
-            String uri = savedInstanceState.getString("uri");
-            // TODO: Get file from the URI.
-            // TODO: Get the byte array (i.e. the key) from the file.
-            // TODO: Share the key with {@link createNdefMessage}.
-        } catch (NullPointerException e) {
-            /*
-               TODO: Handle case when there is no key. Perhaps just make the Key Exchange Fragment
-               accessible only from KeyBankFragment->Share?
-             */
-            Log.d(LOGTAG, "onViewCreated begun with no key argument.");
+            FileInputStream fis = getContext().openFileInput(mFile.getName());
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+            line = sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        keyStream = line.getBytes();
+
+        Log.d(LOGTAG,keyStream.toString());
+
 
         final Button shareKeyButton = (Button) v.findViewById(R.id.keyExchangeButton);
         shareKeyButton.setOnClickListener(new View.OnClickListener() {
@@ -107,11 +123,8 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     //NFC METHODS
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        SecureRandom sr = new SecureRandom();
-        byte[] key = new byte[256];
-
         NdefMessage msg = new NdefMessage(
-                new NdefRecord[] { createMime("application/edu.ohio_state.smokesignal", key)});
+                new NdefRecord[] { createMime("application/edu.ohio_state.smokesignal", keyStream)});
         return msg;
     }
 
