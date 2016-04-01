@@ -9,7 +9,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Encrypt"
+        android:text="Share Key"
         android:id="@+id/keyExchangeButton"
         android:layout_gravity="center"/>
 

@@ -175,7 +175,6 @@ public class KeyBankFragment extends Fragment {
             dialog.show();
         } else if (selected == 1) {
             // The user selected Share.
-            // TODO: Navigate to the KeyExchangeFragment.
             File dir = getActivity().getFilesDir();
             File file = new File(dir, listItemName);
             Uri keyUri = Uri.fromFile(file);

@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.security.SecureRandom;
 
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity
          // only one message sent during the beam
          NdefMessage msg = (NdefMessage) rawMsgs[0];
          // record 0 contains the MIME type, record 1 is the AAR, if present
-         mTextView.setText(new String(msg.getRecords()[0].getPayload()));
+         Toast.makeText(MainActivity.this, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_SHORT).show();
      }
 
      @Override

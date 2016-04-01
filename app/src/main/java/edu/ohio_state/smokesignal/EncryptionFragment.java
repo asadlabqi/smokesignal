@@ -7,13 +7,24 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 /**
@@ -29,10 +40,12 @@ public class EncryptionFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    
-    byte[] keyStream = new byte[16];
+
     byte[] text;
     byte[] cText;
+    byte[] keyStream;
+
+    private List<String> fileList = new ArrayList<>();
 
     //Array for converting byte array to printable format
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
@@ -81,29 +94,75 @@ public class EncryptionFragment extends Fragment {
 
     @Override
     public void onViewCreated(View v, Bundle savedInstanceState) {
-        final TextView PRNGView = (TextView) v.findViewById(R.id.prngView);
-        final TextView plaintextView = (TextView) v.findViewById(R.id.plaintextView);
-        final TextView ciphertextView = (TextView) v.findViewById(R.id.ciphertextView);
-        final TextView decryptView = (TextView) v.findViewById(R.id.decryptView);
         final TextView messageView = (TextView) v.findViewById((R.id.inputView));
+        final TextView inputView = (TextView) v.findViewById((R.id.input));
+        final TextView outputView = (TextView) v.findViewById((R.id.output));
+        final TextView decView = (TextView) v.findViewById((R.id.decView));
 
+        // TODO: Consider just receiving a fileList from the KeyBank.
+        String path = getActivity().getFilesDir().getPath();
+        File f = new File(path);
+        File file[] = f.listFiles();
+        for (int i=0; i < file.length; i++)
+        {
+            fileList.add(i, file[i].getName());
+        }
+
+        // Logic handling for the key selection dropdown.
+        Spinner dropdown = (Spinner) v.findViewById(R.id.key_bank_dropdown);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, fileList);
+        dropdown.setAdapter(adapter);
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,int position, long id) {
+                String keyFile = fileList.get(position);
+                String line = "";
+
+                try {
+                    FileInputStream fis = getContext().openFileInput(keyFile);
+                    InputStreamReader isr = new InputStreamReader(fis);
+                    BufferedReader bufferedReader = new BufferedReader(isr);
+                    StringBuilder sb = new StringBuilder();
+
+                    while ((line = bufferedReader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    line = sb.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                keyStream = line.getBytes();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing!
+
+            }
+        });
+
+        // Encrypt the text in the EditText window.
         final Button encryptButton = (Button) v.findViewById(R.id.encryptButton);
         encryptButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String plaintext = messageView.getText().toString();
                 text = plaintext.getBytes();
-                plaintextView.setText(bytesToHex(text));
+                inputView.setText(bytesToHex(text));
                 cText = encrypt(keyStream, text);
-                ciphertextView.setText(bytesToHex(cText));
+                outputView.setText(bytesToHex(cText));
+
             }
         });
 
+        // Decrypt the text in the EditText window.
         final Button decryptButton = (Button) v.findViewById(R.id.decryptButton);
         decryptButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 byte[] decrypted;
                 decrypted = decrypt(keyStream, cText);
-                decryptView.setText(bytesToHex(decrypted));
+                decView.setText(bytesToHex(decrypted));
             }
         });
 

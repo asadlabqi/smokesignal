@@ -39,4 +39,60 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Input: "
+        android:id="@+id/inputDisplay"
+        android:layout_below="@+id/inputView"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Enc:"
+        android:id="@+id/outputDisplay"
+        android:layout_below="@+id/inputDisplay"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/input"
+        android:layout_alignEnd="@+id/inputView"
+        android:layout_toEndOf="@+id/inputDisplay"
+        android:layout_below="@+id/inputView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/output"
+        android:layout_alignEnd="@+id/input"
+        android:layout_toEndOf="@+id/outputDisplay"
+        android:layout_below="@+id/input"
+        android:layout_alignStart="@+id/input" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Dec:"
+        android:id="@+id/decDisplay"
+        android:layout_below="@+id/outputDisplay"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/decView"
+        android:layout_alignEnd="@+id/output"
+        android:layout_toEndOf="@+id/inputDisplay"
+        android:layout_below="@+id/output"
+        android:layout_alignStart="@+id/output" />
+
 </RelativeLayout>
