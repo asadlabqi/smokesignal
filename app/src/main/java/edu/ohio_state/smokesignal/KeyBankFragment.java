@@ -17,11 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -42,6 +46,9 @@ public class KeyBankFragment extends Fragment {
     private Runnable update;
     private AlertDialog dialog;
     private String listItemName;
+
+    private SecureRandom mSecureRandom;
+    byte[] keyStream = new byte[16];
 
     private OnKeySharedListener mListener;
 
@@ -118,6 +125,31 @@ public class KeyBankFragment extends Fragment {
                 getActivity().getApplicationContext(), R.layout.blacktestlist, fileList);
         keyBank.setAdapter(arrayAdapter);
         registerForContextMenu(keyBank);
+
+        final Button generateButton = (Button) v.findViewById(R.id.generateButton);
+        generateButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mSecureRandom = new SecureRandom();
+                mSecureRandom.nextBytes(keyStream);
+
+                Calendar c = Calendar.getInstance();
+                String filename = "KEY-" + c.get(Calendar.DATE) + "-" + c.get(Calendar.HOUR) + "-" + c.get(Calendar.MINUTE) + "-" + c.get(Calendar.SECOND);
+                FileOutputStream outputStream;
+                Context cxt = getContext();
+
+                try {
+                    outputStream = cxt.openFileOutput(filename, Context.MODE_PRIVATE);
+                    outputStream.write(keyStream);
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                //TODO: Implement same functionality after a key is shared.
+                fileList.add(fileList.size() - 1, filename);
+                getActivity().runOnUiThread(update);
+            }
+        });
     }
 
     @Override

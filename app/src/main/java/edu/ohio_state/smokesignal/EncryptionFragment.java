@@ -29,14 +29,13 @@ public class EncryptionFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    
     byte[] keyStream = new byte[16];
     byte[] text;
     byte[] cText;
 
     //Array for converting byte array to printable format
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-    SecureRandom mSecureRandom;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -87,30 +86,6 @@ public class EncryptionFragment extends Fragment {
         final TextView ciphertextView = (TextView) v.findViewById(R.id.ciphertextView);
         final TextView decryptView = (TextView) v.findViewById(R.id.decryptView);
         final TextView messageView = (TextView) v.findViewById((R.id.inputView));
-
-        final Button PRNGButton = (Button) v.findViewById(R.id.prngButton);
-        PRNGButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mSecureRandom = new SecureRandom();
-                mSecureRandom.nextBytes(keyStream);
-
-                String prng = bytesToHex(keyStream);
-                PRNGView.setText(prng);
-
-                Calendar c = Calendar.getInstance();
-                String filename = "KEY-"+c.get(Calendar.DATE)+"-"+c.get(Calendar.HOUR)+"-"+c.get(Calendar.MINUTE)+"-"+c.get(Calendar.SECOND);
-                FileOutputStream outputStream;
-                Context cxt = getContext();
-
-                try {
-                    outputStream = cxt.openFileOutput(filename, Context.MODE_PRIVATE);
-                    outputStream.write(keyStream);
-                    outputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
 
         final Button encryptButton = (Button) v.findViewById(R.id.encryptButton);
         encryptButton.setOnClickListener(new View.OnClickListener() {

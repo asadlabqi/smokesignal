@@ -6,7 +6,7 @@
 
     <ListView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="465dp"
         android:id="@+id/key_bank_list"
         android:choiceMode="singleChoice"/>
 
@@ -15,5 +15,12 @@
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dip" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Generate Key"
+        android:id="@+id/generateButton"
+        android:layout_gravity="center_horizontal|bottom" />
 
 </FrameLayout>
