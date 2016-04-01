@@ -87,8 +87,11 @@ public class KeyBankFragment extends Fragment {
     public void onViewCreated(final View v, final Bundle savedInstanceState) {
         ListView keyBank = (ListView) v.findViewById(R.id.key_bank_list);
 
-        if(savedInstanceState.getByteArray("key") == null) {
-            addFile(savedInstanceState.getByteArray("key"));
+        try {
+            byte[] newKey = savedInstanceState.getByteArray("key");
+            addFile(newKey);
+        } catch (NullPointerException e) {
+            Log.d(LOGTAG, "onViewCreated begun with no key argument.");
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

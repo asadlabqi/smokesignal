@@ -72,12 +72,17 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     public void onViewCreated(View v, Bundle savedInstanceState) {
         mTextView = (TextView) v.findViewById(R.id.key_exchange_text);
 
-        // Get the key from the file specified in args.
-        String keyPath = savedInstanceState.getString("uri");
-        if (keyPath != null) {
+        try {
+            String uri = savedInstanceState.getString("uri");
             // TODO: Get file from the URI.
             // TODO: Get the byte array (i.e. the key) from the file.
             // TODO: Share the key with {@link createNdefMessage}.
+        } catch (NullPointerException e) {
+            /*
+               TODO: Handle case when there is no key. Perhaps just make the Key Exchange Fragment
+               accessible only from KeyBankFragment->Share?
+             */
+            Log.d(LOGTAG, "onViewCreated begun with no key argument.");
         }
 
         final Button shareKeyButton = (Button) v.findViewById(R.id.keyExchangeButton);
