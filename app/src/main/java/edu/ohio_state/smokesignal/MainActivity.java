@@ -27,7 +27,7 @@ import java.security.SecureRandom;
 import static android.nfc.NdefRecord.createMime;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, NfcAdapter.CreateNdefMessageCallback,
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
                     KeyBankFragment.OnKeySharedListener
  {
 
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        /*
         // Check for available NFC Adapter
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity
         mNfcAdapter.setNdefPushMessageCallback(this, this);
 
         Log.d("MainActivity", "nfc adapter success!!");
+        */
 
     }
 
@@ -147,6 +149,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+     /*
      @Override
      public NdefMessage createNdefMessage(NfcEvent event) {
          String text = ("Beam me up, Android!\n\n" +
@@ -154,18 +157,10 @@ public class MainActivity extends AppCompatActivity
          NdefMessage msg = new NdefMessage(
                  new NdefRecord[] { createMime(
                          "application/edu.ohio_state.smokesignal", text.getBytes())
-                         /**
-                          * The Android Application Record (AAR) is commented out. When a device
-                          * receives a push with an AAR in it, the application specified in the AAR
-                          * is guaranteed to run. The AAR overrides the tag dispatch system.
-                          * You can add it back in to guarantee that this
-                          * activity starts when receiving a beamed message. For now, this code
-                          * uses the tag dispatch system.
-                          */
-                         //,NdefRecord.createApplicationRecord("com.example.android.beam")
                  });
          return msg;
      }
+     */
 
      @Override
      public void onNewIntent(Intent intent) {

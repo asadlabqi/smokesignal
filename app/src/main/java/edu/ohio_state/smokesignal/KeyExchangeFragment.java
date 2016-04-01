@@ -1,6 +1,10 @@
 package edu.ohio_state.smokesignal;
 
 import android.content.Context;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
 import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+
+import java.security.SecureRandom;
+
+import static android.nfc.NdefRecord.createMime;
 
 
 /**
@@ -19,16 +28,12 @@ import android.widget.TextView;
  * Use the {@link KeyExchangeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class KeyExchangeFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNdefMessageCallback {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    NfcAdapter mNfcAdapter;
+    private Context mContext;
     private TextView mTextView;
+    public boolean mSharing;
 
     private static String LOGTAG = "KeyExchangeFragment";
 
@@ -58,10 +63,6 @@ public class KeyExchangeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -75,6 +76,44 @@ public class KeyExchangeFragment extends Fragment {
     public void onViewCreated(View v, Bundle savedInstanceState) {
         mTextView = (TextView) v.findViewById(R.id.key_exchange_text);
 
+        final Button shareKeyButton = (Button) v.findViewById(R.id.keyExchangeButton);
+        shareKeyButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mSharing = true;
+                //mTextView.setText(getActivity().toString());
+
+                mNfcAdapter = NfcAdapter.getDefaultAdapter(mContext);
+                if (mNfcAdapter == null) {
+                    Log.d("Main Activity","NFC NOT AVAILABLE");
+                    return;
+                }
+                // Register callback
+                mNfcAdapter.setNdefPushMessageCallback(KeyExchangeFragment.this, getActivity());
+                mTextView.setText("Sharing key via NFC");
+            }
+        });
+
+    }
+
+    //NFC METHODS
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
+        String text = ("Beam me up, Android!\n\n" +
+                "Beam Time: " + System.currentTimeMillis());
+        NdefMessage msg = new NdefMessage(
+                new NdefRecord[] { createMime(
+                        "application/edu.ohio_state.smokesignal", text.getBytes())
+                        /**
+                         * The Android Application Record (AAR) is commented out. When a device
+                         * receives a push with an AAR in it, the application specified in the AAR
+                         * is guaranteed to run. The AAR overrides the tag dispatch system.
+                         * You can add it back in to guarantee that this
+                         * activity starts when receiving a beamed message. For now, this code
+                         * uses the tag dispatch system.
+                         */
+                        //,NdefRecord.createApplicationRecord("com.example.android.beam")
+                });
+        return msg;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -87,6 +126,8 @@ public class KeyExchangeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext = context;
+        Log.d("KeyExchangeFragment", "IN ON ATTACH");
     }
 
     @Override

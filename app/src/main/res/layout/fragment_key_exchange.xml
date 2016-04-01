@@ -5,6 +5,14 @@
              tools:context="edu.ohio_state.smokesignal.KeyExchangeFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Encrypt"
+        android:id="@+id/keyExchangeButton"
+        android:layout_gravity="center"/>
+
     <TextView
         android:id="@+id/key_exchange_text"
         android:layout_width="match_parent"
