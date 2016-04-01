@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.File;
 import java.security.SecureRandom;
 
 import static android.nfc.NdefRecord.createMime;
@@ -22,9 +23,6 @@ import static android.nfc.NdefRecord.createMime;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link KeyExchangeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link KeyExchangeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -36,8 +34,6 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     public boolean mSharing;
 
     private static String LOGTAG = "KeyExchangeFragment";
-
-    private OnFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -76,6 +72,14 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     public void onViewCreated(View v, Bundle savedInstanceState) {
         mTextView = (TextView) v.findViewById(R.id.key_exchange_text);
 
+        // Get the key from the file specified in args.
+        String keyPath = savedInstanceState.getString("uri");
+        if (keyPath != null) {
+            // TODO: Get file from the URI.
+            // TODO: Get the byte array (i.e. the key) from the file.
+            // TODO: Share the key with {@link createNdefMessage}.
+        }
+
         final Button shareKeyButton = (Button) v.findViewById(R.id.keyExchangeButton);
         shareKeyButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -98,8 +102,9 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     //NFC METHODS
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        String text = ("Beam me up, Android!\n\n" +
-                "Beam Time: " + System.currentTimeMillis());
+        // TODO: Change text to the file contents of the URI in args.
+        String text = "This should be a key!";
+
         NdefMessage msg = new NdefMessage(
                 new NdefRecord[] { createMime(
                         "application/edu.ohio_state.smokesignal", text.getBytes())
@@ -116,16 +121,10 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
         return msg;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         mContext = context;
         Log.d("KeyExchangeFragment", "IN ON ATTACH");
     }
@@ -133,22 +132,6 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
     }
 
 }

@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
              // TODO: Create a Messages Fragment.
          }
          else if(position == 3){
-             fragment = KeyBankFragment.newInstance();
+             fragment = KeyBankFragment.newInstance(null);
          }
          else {
              // TODO: Create a Settings Fragment.
@@ -174,10 +174,11 @@ public class MainActivity extends AppCompatActivity
          // only one message sent during the beam
          NdefMessage msg = (NdefMessage) rawMsgs[0];
          // record 0 contains the MIME type, record 1 is the AAR, if present
-         Toast.makeText(MainActivity.this, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_SHORT).show();
+         byte[] messageText = msg.getRecords()[0].getPayload();
+         Toast.makeText(MainActivity.this, messageText.toString(), Toast.LENGTH_SHORT).show();
 
          FragmentManager fragmentManager = getSupportFragmentManager();
-         Fragment fragment = KeyBankFragment.newInstance();
+         Fragment fragment = KeyBankFragment.newInstance(messageText);
          fragmentManager.beginTransaction()
                  .replace(R.id.container, fragment).commit();
      }

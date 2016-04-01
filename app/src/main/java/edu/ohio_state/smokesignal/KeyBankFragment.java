@@ -1,12 +1,10 @@
 package edu.ohio_state.smokesignal;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -39,7 +37,7 @@ import java.util.List;
  */
 public class KeyBankFragment extends Fragment {
 
-    final String LOGTAG = "KeyBankFragment";
+    final private static String LOGTAG = "KeyBankFragment";
 
     private List<String> fileList = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter;
@@ -48,7 +46,7 @@ public class KeyBankFragment extends Fragment {
     private String listItemName;
 
     private SecureRandom mSecureRandom;
-    byte[] keyStream = new byte[16];
+    private byte[] keyStream = new byte[16];
 
     private OnKeySharedListener mListener;
 
@@ -58,9 +56,12 @@ public class KeyBankFragment extends Fragment {
      *
      * @return A new instance of fragment KeyBankFragment.
      */
-    public static KeyBankFragment newInstance() {
+    public static KeyBankFragment newInstance(byte[] key) {
         KeyBankFragment fragment = new KeyBankFragment();
         Bundle args = new Bundle();
+        if(key != null) {
+            args.putByteArray("key", key);
+        }
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,8 +84,12 @@ public class KeyBankFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(final View v, Bundle savedInstanceState) {
+    public void onViewCreated(final View v, final Bundle savedInstanceState) {
         ListView keyBank = (ListView) v.findViewById(R.id.key_bank_list);
+
+        if(savedInstanceState.getByteArray("key") == null) {
+            addFile(savedInstanceState.getByteArray("key"));
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(R.layout.fragment_rename_dialog);
@@ -131,23 +136,7 @@ public class KeyBankFragment extends Fragment {
             public void onClick(View v) {
                 mSecureRandom = new SecureRandom();
                 mSecureRandom.nextBytes(keyStream);
-
-                Calendar c = Calendar.getInstance();
-                String filename = "KEY-" + c.get(Calendar.DATE) + "-" + c.get(Calendar.HOUR) + "-" + c.get(Calendar.MINUTE) + "-" + c.get(Calendar.SECOND);
-                FileOutputStream outputStream;
-                Context cxt = getContext();
-
-                try {
-                    outputStream = cxt.openFileOutput(filename, Context.MODE_PRIVATE);
-                    outputStream.write(keyStream);
-                    outputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                //TODO: Implement same functionality after a key is shared.
-                fileList.add(fileList.size() - 1, filename);
-                getActivity().runOnUiThread(update);
+                addFile(keyStream);
             }
         });
     }
@@ -210,7 +199,7 @@ public class KeyBankFragment extends Fragment {
         activity and pass it on to Key Exchange.
     */
     public interface OnKeySharedListener {
-        public void OnKeyShared(Uri uri);
+        void OnKeyShared(Uri uri);
     }
 
     private boolean delete(String itemName) {
@@ -234,6 +223,26 @@ public class KeyBankFragment extends Fragment {
 
         fileList.remove(itemName);
         fileList.add(fileList.size() - 1, newName);
+    }
+
+    private void addFile(byte[] keyStream) {
+        FileOutputStream outputStream;
+        Context cxt = getContext();
+
+        Calendar c = Calendar.getInstance();
+        String filename = "KEY-" + c.get(Calendar.DATE) + "-" + c.get(Calendar.HOUR) + "-" + c.get(Calendar.MINUTE) + "-" + c.get(Calendar.SECOND);
+
+        try {
+            outputStream = cxt.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(keyStream);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Add the file to the fileList.
+        fileList.add(fileList.size() - 1, filename);
+        getActivity().runOnUiThread(update);
     }
 
 }
