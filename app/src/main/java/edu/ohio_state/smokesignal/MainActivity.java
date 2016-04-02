@@ -74,11 +74,9 @@ public class MainActivity extends AppCompatActivity
              fragment = KeyExchangeFragment.newInstance(null);
          }else if(position == 2){
              fragment = MessagesFragment.newInstance();
-         }
-         else if(position == 3){
+         }else if(position == 3){
              fragment = KeyBankFragment.newInstance(null);
-         }
-         else {
+         } else {
              fragment = SettingsFragment.newInstance();
          }
 
@@ -87,7 +85,6 @@ public class MainActivity extends AppCompatActivity
 
      }
 
-     // TODO: Determine if this is still needed now that PlaceHolder Fragment is gone.
      public void onSectionAttached(int number) {
          switch (number) {
              case 1:

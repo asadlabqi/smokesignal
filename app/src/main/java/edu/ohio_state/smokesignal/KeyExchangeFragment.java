@@ -1,5 +1,6 @@
 package edu.ohio_state.smokesignal;
 
+import android.app.Activity;
 import android.content.Context;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -133,6 +134,8 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
         super.onAttach(context);
 
         mContext = context;
+        Activity activity = (Activity) context;
+        ((MainActivity) activity).onSectionAttached(2);
         Log.d("KeyExchangeFragment", "IN ON ATTACH");
     }
 

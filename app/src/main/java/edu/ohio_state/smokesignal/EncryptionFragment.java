@@ -1,9 +1,11 @@
 package edu.ohio_state.smokesignal;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +42,7 @@ public class EncryptionFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static String LOGTAG = "EncryptionFragment";
 
     byte[] text;
     byte[] cText;
@@ -115,7 +118,7 @@ public class EncryptionFragment extends Fragment {
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view,int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String keyFile = fileList.get(position);
                 String line = "";
 
@@ -179,6 +182,9 @@ public class EncryptionFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Activity activity = (Activity) context;
+        ((MainActivity) activity).onSectionAttached(1);
+        Log.d(LOGTAG, "IN ON ATTACH");
     }
 
     @Override

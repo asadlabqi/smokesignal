@@ -1,5 +1,6 @@
 package edu.ohio_state.smokesignal;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -190,6 +191,10 @@ public class KeyBankFragment extends Fragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(getActivity().toString() + " must implement OnKeySharedListener");
         }
+
+        Activity activity = (Activity) context;
+        ((MainActivity) activity).onSectionAttached(4);
+        Log.d(LOGTAG, "IN ON ATTACH");
     }
 
     @Override

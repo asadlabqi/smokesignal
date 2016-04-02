@@ -1,9 +1,11 @@
 package edu.ohio_state.smokesignal;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
  */
 public class SettingsFragment extends Fragment {
 
+    private static String LOGTAG = "SettingsFragment";
 
     private OnFragmentInteractionListener mListener;
 
@@ -61,6 +64,9 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Activity activity = (Activity) context;
+        ((MainActivity) activity).onSectionAttached(5);
+        Log.d(LOGTAG, "IN ON ATTACH");
     }
 
     @Override
