@@ -71,10 +71,8 @@ public class MainActivity extends AppCompatActivity
          if (position == 0) {
              fragment = EncryptionFragment.newInstance();
          }else if(position == 1){
-             fragment = KeyExchangeFragment.newInstance(null);
-         }else if(position == 2){
              fragment = MessagesFragment.newInstance();
-         }else if(position == 3){
+         }else if(position == 2){
              fragment = KeyBankFragment.newInstance(null);
          } else {
              fragment = SettingsFragment.newInstance();
@@ -91,15 +89,12 @@ public class MainActivity extends AppCompatActivity
                  mTitle = getString(R.string.encryption);
                  break;
              case 2:
-                 mTitle = getString(R.string.share_key);
-                 break;
-             case 3:
                  mTitle = getString(R.string.messages);
                  break;
-             case 4:
+             case 3:
                  mTitle = getString(R.string.key_bank);
                  break;
-             case 5:
+             case 4:
                  mTitle = getString(R.string.settings);
                  break;
          }
