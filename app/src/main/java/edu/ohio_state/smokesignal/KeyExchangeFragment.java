@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.SecureRandom;
 
 import static android.nfc.NdefRecord.createMime;
 
@@ -99,14 +98,13 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
 
         keyStream = line.getBytes();
 
-        Log.d(LOGTAG,keyStream.toString());
+        Log.d(LOGTAG, "Key Stream was: " + keyStream.toString());
 
 
         final Button shareKeyButton = (Button) v.findViewById(R.id.keyExchangeButton);
         shareKeyButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mSharing = true;
-                //mTextView.setText(getActivity().toString());
 
                 mNfcAdapter = NfcAdapter.getDefaultAdapter(mContext);
                 if (mNfcAdapter == null) {
@@ -115,7 +113,7 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
                 }
                 // Register callback
                 mNfcAdapter.setNdefPushMessageCallback(KeyExchangeFragment.this, getActivity());
-                mTextView.setText("Sharing key via NFC");
+                mTextView.setText(R.string.sharing_NFC);
             }
         });
 
@@ -124,9 +122,8 @@ public class KeyExchangeFragment extends Fragment implements NfcAdapter.CreateNd
     //NFC METHODS
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        NdefMessage msg = new NdefMessage(
+        return new NdefMessage(
                 new NdefRecord[] { createMime("application/edu.ohio_state.smokesignal", keyStream)});
-        return msg;
     }
 
     @Override

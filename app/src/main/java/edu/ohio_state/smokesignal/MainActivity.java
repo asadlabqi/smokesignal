@@ -89,12 +89,15 @@ public class MainActivity extends AppCompatActivity
                  mTitle = getString(R.string.encryption);
                  break;
              case 2:
-                 mTitle = getString(R.string.messages);
+                 mTitle = getString(R.string.share_key);
                  break;
              case 3:
-                 mTitle = getString(R.string.key_bank);
+                 mTitle = getString(R.string.messages);
                  break;
              case 4:
+                 mTitle = getString(R.string.key_bank);
+                 break;
+             case 5:
                  mTitle = getString(R.string.settings);
                  break;
          }
