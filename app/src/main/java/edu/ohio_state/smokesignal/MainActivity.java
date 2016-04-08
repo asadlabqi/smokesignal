@@ -70,11 +70,10 @@ public class MainActivity extends AppCompatActivity
          Fragment fragment;
          if (position == 0) {
              fragment = EncryptionFragment.newInstance();
-         }else if(position == 1){
-             fragment = MessagesFragment.newInstance();
-         }else if(position == 2){
+         }else if(position == 1) {
              fragment = KeyBankFragment.newInstance(null);
-         } else {
+         }
+         else {
              fragment = SettingsFragment.newInstance();
          }
 
@@ -93,8 +92,7 @@ public class MainActivity extends AppCompatActivity
                  break;
              case 3:
                  mTitle = getString(R.string.messages);
-                 break;
-             case 4:
+                 break;             case 4:
                  mTitle = getString(R.string.key_bank);
                  break;
              case 5:

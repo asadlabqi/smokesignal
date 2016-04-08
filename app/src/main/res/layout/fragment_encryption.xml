@@ -15,84 +15,36 @@
         android:background="@android:drawable/btn_dropdown"
         android:spinnerMode="dropdown" />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inputView"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/sendButton"
+        android:layout_below="@+id/key_bank_dropdown" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Encrypt"
-        android:id="@+id/encryptButton"
-        android:layout_below="@+id/key_bank_dropdown"
-        android:layout_alignParentStart="true" />
+        android:text="Send"
+        android:id="@+id/sendButton"
+        android:layout_alignEnd="@+id/key_bank_dropdown"
+        android:layout_below="@+id/key_bank_dropdown" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/decryptView"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/decryptButton" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Decrypt"
         android:id="@+id/decryptButton"
-        android:layout_alignTop="@+id/encryptButton"
-        android:layout_toEndOf="@+id/encryptButton" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/inputView"
-        android:layout_below="@+id/encryptButton"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Input: "
-        android:id="@+id/inputDisplay"
-        android:layout_below="@+id/inputView"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Enc:"
-        android:id="@+id/outputDisplay"
-        android:layout_below="@+id/inputDisplay"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/input"
-        android:layout_alignEnd="@+id/inputView"
-        android:layout_toEndOf="@+id/inputDisplay"
-        android:layout_below="@+id/inputView" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/output"
-        android:layout_alignEnd="@+id/input"
-        android:layout_toEndOf="@+id/outputDisplay"
-        android:layout_below="@+id/input"
-        android:layout_alignStart="@+id/input" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Dec:"
-        android:id="@+id/decDisplay"
-        android:layout_below="@+id/outputDisplay"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/decView"
-        android:layout_alignEnd="@+id/output"
-        android:layout_toEndOf="@+id/inputDisplay"
-        android:layout_below="@+id/output"
-        android:layout_alignStart="@+id/output" />
 
 </RelativeLayout>

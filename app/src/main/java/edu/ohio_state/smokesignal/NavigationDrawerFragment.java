@@ -101,7 +101,6 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.id.text1,
                 new String[]{
                         getString(R.string.encryption),
-                        getString(R.string.messages),
                         getString(R.string.key_bank),
                         getString(R.string.settings)
                 }));

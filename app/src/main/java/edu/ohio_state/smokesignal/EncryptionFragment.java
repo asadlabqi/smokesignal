@@ -12,20 +12,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -38,25 +35,14 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class EncryptionFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private static String LOGTAG = "EncryptionFragment";
 
-    byte[] text;
-    byte[] cText;
     byte[] keyStream;
 
     private List<String> fileList = new ArrayList<>();
 
     //Array for converting byte array to printable format
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private TextView mTextView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,7 +52,6 @@ public class EncryptionFragment extends Fragment {
      *
      * @return A new instance of fragment EncryptionFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static EncryptionFragment newInstance() {
         EncryptionFragment fragment = new EncryptionFragment();
         Bundle args = new Bundle();
@@ -81,10 +66,6 @@ public class EncryptionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -97,12 +78,10 @@ public class EncryptionFragment extends Fragment {
 
     @Override
     public void onViewCreated(View v, Bundle savedInstanceState) {
-        final TextView messageView = (TextView) v.findViewById((R.id.inputView));
-        final TextView inputView = (TextView) v.findViewById((R.id.input));
-        final TextView outputView = (TextView) v.findViewById((R.id.output));
-        final TextView decView = (TextView) v.findViewById((R.id.decView));
+        final TextView inputView = (TextView) v.findViewById(R.id.inputView);
+        final TextView decryptView = (TextView) v.findViewById(R.id.decryptView);
 
-        // TODO: Consider just receiving a fileList from the KeyBank.
+        // Get all the keys from the Key Bank.
         String path = getActivity().getFilesDir().getPath();
         File f = new File(path);
         File file[] = f.listFiles();
@@ -113,7 +92,7 @@ public class EncryptionFragment extends Fragment {
 
         // Logic handling for the key selection dropdown.
         Spinner dropdown = (Spinner) v.findViewById(R.id.key_bank_dropdown);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, fileList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, fileList);
         dropdown.setAdapter(adapter);
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -147,14 +126,14 @@ public class EncryptionFragment extends Fragment {
         });
 
         // Encrypt the text in the EditText window.
-        final Button encryptButton = (Button) v.findViewById(R.id.encryptButton);
-        encryptButton.setOnClickListener(new View.OnClickListener() {
+        final Button sendButton = (Button) v.findViewById(R.id.sendButton);
+        sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String plaintext = messageView.getText().toString();
-                text = plaintext.getBytes();
-                inputView.setText(bytesToHex(text));
-                cText = encrypt(keyStream, text);
-                outputView.setText(bytesToHex(cText));
+                String plaintext = inputView.getText().toString();
+                byte[] text = plaintext.getBytes();
+                byte[] cText = encrypt(keyStream, text);
+
+                // TODO: Send cText to another user via SMS.
 
             }
         });
@@ -164,19 +143,17 @@ public class EncryptionFragment extends Fragment {
         decryptButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 byte[] decrypted;
+                byte[] cText = decryptView.getText().toString().getBytes();
+
                 decrypted = decrypt(keyStream, cText);
-                decView.setText(bytesToHex(decrypted));
+
+                // TODO: Change decryted to actual ASCII instead of Hex.
+
+                decryptView.setText(bytesToHex(decrypted));
             }
         });
 
 
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -204,7 +181,6 @@ public class EncryptionFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 
