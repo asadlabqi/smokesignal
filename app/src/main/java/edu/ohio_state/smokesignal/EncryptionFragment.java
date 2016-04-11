@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,7 @@ public class EncryptionFragment extends Fragment {
     public void onViewCreated(View v, Bundle savedInstanceState) {
         final TextView inputView = (TextView) v.findViewById(R.id.inputView);
         final TextView decryptView = (TextView) v.findViewById(R.id.decryptView);
+        final TextView phoneView = (TextView) v.findViewById(R.id.phoneWindow);
 
         // Get all the keys from the Key Bank.
         String path = getActivity().getFilesDir().getPath();
@@ -130,11 +132,12 @@ public class EncryptionFragment extends Fragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String plaintext = inputView.getText().toString();
+                String phoneNo = phoneView.getText().toString();
                 byte[] text = plaintext.getBytes();
                 byte[] cText = encrypt(keyStream, text);
 
-                // TODO: Send cText to another user via SMS.
-
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(phoneNo, null, bytesToHex(cText), null, null);
             }
         });
 
@@ -146,14 +149,9 @@ public class EncryptionFragment extends Fragment {
                 byte[] cText = decryptView.getText().toString().getBytes();
 
                 decrypted = decrypt(keyStream, cText);
-
-                // TODO: Change decryted to actual ASCII instead of Hex.
-
-                decryptView.setText(bytesToHex(decrypted));
+                decryptView.setText(hexToASCII(bytesToHex(decrypted)));
             }
         });
-
-
     }
 
     @Override
@@ -218,6 +216,16 @@ public class EncryptionFragment extends Fragment {
             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
         }
         return new String(hexChars);
+    }
+
+    // Converts a string of hex digits into printable ASCII.
+    public static String hexToASCII(String hexString) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < hexString.length(); i+=2) {
+            String str = hexString.substring(i, i+2);
+            sb.append((char)Integer.parseInt(str, 16));
+        }
+        return sb.toString();
     }
 
 }

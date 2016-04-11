@@ -19,17 +19,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/inputView"
+        android:layout_above="@+id/sendButton"
         android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/sendButton"
-        android:layout_below="@+id/key_bank_dropdown" />
+        android:layout_below="@+id/phoneWindow"
+        android:layout_alignEnd="@+id/sendButton" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send"
         android:id="@+id/sendButton"
-        android:layout_alignEnd="@+id/key_bank_dropdown"
-        android:layout_below="@+id/key_bank_dropdown" />
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -45,6 +46,16 @@
         android:text="Decrypt"
         android:id="@+id/decryptButton"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/phoneWindow"
+        android:layout_below="@+id/key_bank_dropdown"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
