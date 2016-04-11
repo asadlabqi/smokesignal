@@ -15,9 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -149,7 +146,9 @@ public class EncryptionFragment extends Fragment {
                 byte[] cText = decryptView.getText().toString().getBytes();
 
                 decrypted = decrypt(keyStream, cText);
-                decryptView.setText(hexToASCII(bytesToHex(decrypted)));
+                String output = hexToASCII(bytesToHex(decrypted));
+                Log.d(LOGTAG, "Message decrypted to: " + output);
+                decryptView.setText(output);
             }
         });
     }
