@@ -231,7 +231,12 @@ public class KeyBankFragment extends Fragment {
         Log.d(LOGTAG, "Rename Result - " + result);
 
         fileList.remove(itemName);
-        fileList.add(fileList.size() - 1, newName);
+
+        if(fileList.size() > 0) {
+            fileList.add(fileList.size() - 1, newName);
+        }else{
+            fileList.add(0, newName);
+        }
     }
 
     public void addFile(byte[] keyStream) {
