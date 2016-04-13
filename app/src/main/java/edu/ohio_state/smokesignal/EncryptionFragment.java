@@ -77,8 +77,11 @@ public class EncryptionFragment extends Fragment {
     @Override
     public void onViewCreated(View v, Bundle savedInstanceState) {
         final TextView inputView = (TextView) v.findViewById(R.id.inputView);
+        inputView.setHint("Text Message");
         final TextView decryptView = (TextView) v.findViewById(R.id.decryptView);
+        decryptView.setHint("Encrypted Text");
         final TextView phoneView = (TextView) v.findViewById(R.id.phoneWindow);
+        phoneView.setHint("Phone Number");
 
         // Get all the keys from the Key Bank.
         String path = getActivity().getFilesDir().getPath();
