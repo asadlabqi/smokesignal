@@ -1,5 +1,6 @@
 package edu.ohio_state.smokesignal;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NdefMessage;
@@ -17,7 +18,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
 import java.util.Arrays;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -155,7 +158,21 @@ public class MainActivity extends AppCompatActivity
          NdefMessage msg = (NdefMessage) rawMsgs[0];
          // record 0 contains the MIME type, record 1 is the AAR, if present
          byte[] messageText = msg.getRecords()[0].getPayload();
+
          Toast.makeText(MainActivity.this, Arrays.toString(messageText), Toast.LENGTH_SHORT).show();
+
+         // Write the new key to the KeyBank.
+         FileOutputStream outputStream;
+         Calendar c = Calendar.getInstance();
+         String filename = "KEY-" + c.get(Calendar.DATE) + "-" + c.get(Calendar.HOUR) + "-" + c.get(Calendar.MINUTE) + "-" + c.get(Calendar.SECOND);
+
+         try {
+             outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+             outputStream.write(messageText);
+             outputStream.close();
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
 
          FragmentManager fragmentManager = getSupportFragmentManager();
          Fragment fragment = KeyBankFragment.newInstance(messageText);

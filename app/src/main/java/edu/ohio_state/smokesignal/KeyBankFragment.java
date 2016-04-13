@@ -234,7 +234,7 @@ public class KeyBankFragment extends Fragment {
         fileList.add(fileList.size() - 1, newName);
     }
 
-    private void addFile(byte[] keyStream) {
+    public void addFile(byte[] keyStream) {
         FileOutputStream outputStream;
         Context cxt = getContext();
 
