@@ -129,9 +129,12 @@ public class EncryptionFragment extends Fragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String plaintext = inputView.getText().toString();
+                Log.d(LOGTAG, "Message was: " + plaintext);
                 String phoneNo = phoneView.getText().toString();
+                Log.d(LOGTAG, "Phone number was: " + phoneNo);
                 byte[] text = plaintext.getBytes();
                 byte[] cText = encrypt(keyStream, text);
+                Log.d(LOGTAG, "Encrypted Message was: " + bytesToHex(cText));
 
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(phoneNo, null, bytesToHex(cText), null, null);
@@ -145,6 +148,7 @@ public class EncryptionFragment extends Fragment {
                 byte[] decrypted;
                 byte[] cText = decryptView.getText().toString().getBytes();
 
+                Log.d(LOGTAG, "Encrypted Message Received: " + bytesToHex(cText));
                 decrypted = decrypt(keyStream, cText);
                 String output = hexToASCII(bytesToHex(decrypted));
                 Log.d(LOGTAG, "Message decrypted to: " + output);
