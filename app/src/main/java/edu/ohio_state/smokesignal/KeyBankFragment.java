@@ -47,7 +47,7 @@ public class KeyBankFragment extends Fragment {
     private String listItemName;
 
     private SecureRandom mSecureRandom;
-    private byte[] keyStream = new byte[16];
+    private byte[] keyStream = new byte[1024];
 
     private OnKeySharedListener mListener;
 

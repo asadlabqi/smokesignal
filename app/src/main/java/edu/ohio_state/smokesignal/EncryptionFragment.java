@@ -15,9 +15,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ import java.util.List;
 public class EncryptionFragment extends Fragment {
     private static String LOGTAG = "EncryptionFragment";
 
+    String keyFile;
     byte[] keyStream;
 
     private List<String> fileList = new ArrayList<>();
@@ -100,7 +104,7 @@ public class EncryptionFragment extends Fragment {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String keyFile = fileList.get(position);
+                keyFile = fileList.get(position);
                 String line = "";
 
                 try {
@@ -136,11 +140,24 @@ public class EncryptionFragment extends Fragment {
                 String phoneNo = phoneView.getText().toString();
                 Log.d(LOGTAG, "Phone number was: " + phoneNo);
                 byte[] text = plaintext.getBytes();
-                byte[] cText = encrypt(keyStream, text);
-                Log.d(LOGTAG, "Encrypted Message was: " + bytesToHex(cText));
 
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(phoneNo, null, bytesToHex(cText), null, null);
+                // This assumes that the key is destroyed as parts of it are used.
+                if(text.length <= keyStream.length) {
+                    byte[] cText = encrypt(keyStream, text);
+                    Log.d(LOGTAG, "Encrypted Message was: " + bytesToHex(cText));
+
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(phoneNo, null, bytesToHex(cText), null, null);
+
+                    Log.d(LOGTAG, "Message of length " + text.length + " bytes sent.");
+
+                    // If we've gotten this far without error, than a message has been sent. Destroy
+                    // the part of the key we used so that it will never be used again.
+                    shrinkKeyStream(text);
+
+                } else {
+                    Toast.makeText(getActivity(), "Out of key. Message must be " + keyStream.length + " characters long.", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -158,6 +175,9 @@ public class EncryptionFragment extends Fragment {
                 String output = hexToASCII(bytesToHex(decrypted));
                 Log.d(LOGTAG, "Message decrypted to: " + output);
                 decryptView.setText(output);
+
+                // Destroy the part of the key we used so that it will never be used again.
+                shrinkKeyStream(decrypted);
             }
         });
     }
@@ -246,6 +266,32 @@ public class EncryptionFragment extends Fragment {
             sb.append((char)Integer.parseInt(str, 16));
         }
         return sb.toString();
+    }
+
+    private void shrinkKeyStream(byte[] message) {
+        FileOutputStream outputStream;
+        Context cxt = getContext();
+        File dir = getActivity().getFilesDir();
+        File file = new File(dir, keyFile);
+
+        boolean deleted = file.delete();
+        Log.d(LOGTAG, "Result of deletion of" + keyFile + " was: " + deleted);
+
+        byte[] newKeyStream = new byte[keyStream.length - message.length];
+        for(int i = 0 ; i < newKeyStream.length ; i++) {
+            newKeyStream[i] = keyStream[i + message.length];
+        }
+
+        File newFile = new File(keyFile);
+        try {
+            outputStream = cxt.openFileOutput(keyFile, Context.MODE_PRIVATE);
+            outputStream.write(newKeyStream);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.d(LOGTAG, "Key Stream reduced by " + (keyStream.length - newKeyStream.length) + " characters.");
     }
 
 }
