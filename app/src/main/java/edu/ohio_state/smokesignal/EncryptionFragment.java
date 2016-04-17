@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -281,12 +282,14 @@ public class EncryptionFragment extends Fragment {
         for(int i = 0 ; i < newKeyStream.length ; i++) {
             newKeyStream[i] = keyStream[i + message.length];
         }
+        Log.d(LOGTAG,"Keystream Length " + keyStream.length);
 
         Log.d(LOGTAG,"OLD KEYSTREAM" + keyStream);
         Log.d(LOGTAG,"New KEYSTREAM" + newKeyStream);
 
-        keyStream = newKeyStream;
-
+        keyStream = Arrays.copyOf(newKeyStream,newKeyStream.length);
+        //keyStream = newKeyStream;
+        Log.d(LOGTAG, "Keystream Length " + keyStream.length);
         //File newFile = new File(keyFile);
         try {
             outputStream = cxt.openFileOutput(keyFile, 0);
