@@ -287,8 +287,8 @@ public class EncryptionFragment extends Fragment {
         Log.d(LOGTAG,"OLD KEYSTREAM" + keyStream);
         Log.d(LOGTAG,"New KEYSTREAM" + newKeyStream);
 
-        keyStream = Arrays.copyOf(newKeyStream,newKeyStream.length);
-        //keyStream = newKeyStream;
+        //keyStream = Arrays.copyOf(newKeyStream,newKeyStream.length);
+        keyStream = newKeyStream;
         Log.d(LOGTAG, "Keystream Length " + keyStream.length);
         //File newFile = new File(keyFile);
         try {
