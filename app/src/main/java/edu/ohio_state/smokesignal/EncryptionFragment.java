@@ -170,15 +170,19 @@ public class EncryptionFragment extends Fragment {
                 String hexMsg = decryptView.getText().toString();
                 byte[] cText = hexStringToByteArray(hexMsg);
 
-                Log.d(LOGTAG, "Encrypted Message Received: " + hexMsg);
-                decrypted = decrypt(keyStream, cText);
-                Log.d(LOGTAG, "Decrypted Hex was: " + bytesToHex(decrypted));
-                String output = hexToASCII(bytesToHex(decrypted));
-                Log.d(LOGTAG, "Message decrypted to: " + output);
-                decryptView.setText(output);
+                if(keyStream.length>=cText.length) {
+                    Log.d(LOGTAG, "Encrypted Message Received: " + hexMsg);
+                    decrypted = decrypt(keyStream, cText);
+                    Log.d(LOGTAG, "Decrypted Hex was: " + bytesToHex(decrypted));
+                    String output = hexToASCII(bytesToHex(decrypted));
+                    Log.d(LOGTAG, "Message decrypted to: " + output);
+                    decryptView.setText(output);
 
-                // Destroy the part of the key we used so that it will never be used again.
-                shrinkKeyStream(decrypted);
+                    // Destroy the part of the key we used so that it will never be used again.
+                    shrinkKeyStream(decrypted);
+                }else{
+                    Toast.makeText(getActivity(), "Out of key. Must exchange new key", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
