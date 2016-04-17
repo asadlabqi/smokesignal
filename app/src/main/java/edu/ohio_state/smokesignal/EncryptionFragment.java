@@ -271,27 +271,32 @@ public class EncryptionFragment extends Fragment {
     private void shrinkKeyStream(byte[] message) {
         FileOutputStream outputStream;
         Context cxt = getContext();
-        File dir = getActivity().getFilesDir();
-        File file = new File(dir, keyFile);
+        //File dir = getActivity().getFilesDir();
+        //File file = new File(dir, keyFile);
 
-        boolean deleted = file.delete();
-        Log.d(LOGTAG, "Result of deletion of" + keyFile + " was: " + deleted);
+        //boolean deleted = file.delete();
+        //Log.d(LOGTAG, "Result of deletion of " + keyFile + " was: " + deleted);
 
         byte[] newKeyStream = new byte[keyStream.length - message.length];
         for(int i = 0 ; i < newKeyStream.length ; i++) {
             newKeyStream[i] = keyStream[i + message.length];
         }
 
-        File newFile = new File(keyFile);
+        Log.d(LOGTAG,"OLD KEYSTREAM" + keyStream);
+        Log.d(LOGTAG,"New KEYSTREAM" + newKeyStream);
+
+        keyStream = newKeyStream;
+
+        //File newFile = new File(keyFile);
         try {
-            outputStream = cxt.openFileOutput(keyFile, Context.MODE_PRIVATE);
+            outputStream = cxt.openFileOutput(keyFile, 0);
             outputStream.write(newKeyStream);
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Log.d(LOGTAG, "Key Stream reduced by " + (keyStream.length - newKeyStream.length) + " characters.");
+        Log.d(LOGTAG, "Key Stream reduced by " + (message.length) + " characters.");
     }
 
 }
